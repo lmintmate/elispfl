@@ -108,6 +108,7 @@ library/userland functions."
                       #'font-lock-add-keywords
                     #'font-lock-remove-keywords)))
     (funcall executor 'emacs-lisp-mode keywords-alist)
+	(funcall executor 'lisp-interaction-mode keywords-alist)
     (font-lock-flush)))
 
 (provide 'elispfl)
