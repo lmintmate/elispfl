@@ -32,6 +32,22 @@
 (require 'advice)
 (require 'font-lock)
 
+(defgroup elispfl nil
+  "Enhanced font lock for `emacs-lisp-mode'."
+  :prefix "elispfl-"
+  :group 'faces)
+
+(defface elispfl-face-name-face
+  '((t :inherit default))
+  "Face used to highlight face names."
+  :group 'elispfl)
+
+(defcustom elispfl-face-use-itself
+  nil
+  "Non-nil means highlight face name by the face itself instead of `elispfl-face-name-face'"
+  :group 'elispfl
+  :type 'boolean)
+
 (defvar elispfl-face nil
   "A variable to hold current face used to render.")
 
@@ -66,6 +82,10 @@ If SUBR-CALL?, means SYM is appeared in a subroutine call form."
                (if (subrp real-fn)
                    'font-lock-constant-face
                  'font-lock-function-name-face)))))
+        ((facep sym)
+         (if elispfl-face-use-itself
+             sym
+             'elispfl-face-name-face))
         ((special-variable-p sym)
          'font-lock-variable-name-face)))
 
