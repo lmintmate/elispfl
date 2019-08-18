@@ -37,6 +37,21 @@
   :prefix "elispfl-"
   :group 'faces)
 
+(defface elispfl-function-name-face
+  '((t :inherit font-lock-function-name-face))
+  "Face used to highlight function names."
+  :group 'elispfl)
+
+(defface elispfl-builtin-function-name-face
+  '((t :inherit font-lock-constant-face))
+  "Face used to highlight built-in function names."
+  :group 'elispfl)
+
+(defface elispfl-special-variable-name-face
+  '((t :inherit font-lock-variable-name-face))
+  "Face used to highlight special variable names."
+  :group 'elispfl)
+
 (defface elispfl-face-name-face
   '((t :inherit default))
   "Face used to highlight face names."
@@ -67,9 +82,9 @@ All aliases and advices will be removed."
 (defun elispfl--get-face (sym &optional subr-call?)
   "Get appropriate face for SYM.
 
-Sign: (->* (Sym) (Bool) (Option (U 'font-lock-constant-face
-                                   'font-lock-variable-name-face
-                                   'font-lock-function-name-face)))
+Sign: (->* (Sym) (Bool) (Option (U 'elispfl-builtin-function-name-face
+                                   'elispfl-special-variable-name-face
+                                   'elispfl-function-name-face)))
 
 If SUBR-CALL?, means SYM is appeared in a subroutine call form."
   (cond ((booleanp sym) nil)
@@ -80,14 +95,14 @@ If SUBR-CALL?, means SYM is appeared in a subroutine call form."
              (unless (or (macrop real-fn)
                          (special-form-p real-fn))
                (if (subrp real-fn)
-                   'font-lock-constant-face
-                 'font-lock-function-name-face)))))
+                   'elispfl-builtin-function-name-face
+                 'elispfl-function-name-face)))))
         ((facep sym)
          (if elispfl-face-use-itself
              sym
              'elispfl-face-name-face))
         ((special-variable-p sym)
-         'font-lock-variable-name-face)))
+         'elispfl-special-variable-name-face)))
 
 (defsubst elispfl-inside-code? ()
   "Return t if current point not in comment or string.
@@ -128,7 +143,7 @@ library/userland functions."
                       #'font-lock-add-keywords
                     #'font-lock-remove-keywords)))
     (funcall executor 'emacs-lisp-mode keywords-alist)
-	(funcall executor 'lisp-interaction-mode keywords-alist)
+    (funcall executor 'lisp-interaction-mode keywords-alist)
     (font-lock-flush)))
 
 (provide 'elispfl)
